@@ -9,7 +9,7 @@ import todoService from './todoService.js';
   });
 
   findById('new-todo-input').addEventListener('keydown', e => {
-    if ('Enter' === e.key) {
+    if ('Enter' === e.key && e.target.value) {
       new todoService.Todo(e.target.value);
       e.target.value = '';
       refreshUi();
