@@ -28,10 +28,29 @@ export default (function() {
     setTodoItems([]);
   }
 
+  function addTodoItem(todoItem) {
+    setTodoItems([...getTodoItems(), todoItem]);
+  }
+
+  function getTodoItem(id) {
+    return getTodoItems().filter(todoItem => todoItem.id === id)[0];
+  }
+
+  function updateTodoItem(todoItem) {
+    const allTodoItems = getTodoItems();
+    const itemIndex = allTodoItems.findIndex(item => item.id === todoItem.id);
+    allTodoItems[itemIndex].text = todoItem.text;
+    allTodoItems[itemIndex].id = todoItem.id;
+    allTodoItems[itemIndex].completed = todoItem.completed;
+    setTodoItems(allTodoItems);
+  }
+
   return {
     getNextTodoItemId,
+    addTodoItem,
     getTodoItems,
-    setTodoItems,
+    getTodoItem,
+    updateTodoItem,
     deleteTodoItem,
     deleteTodoItems
   }

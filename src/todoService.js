@@ -5,15 +5,13 @@ export default (function() {
     this.text = text;
     this.id = `todo-item-${todoItemsStorageService.getNextTodoItemId()}`;
     this.completed = false;
-
-    todoItemsStorageService.setTodoItems([...todoItemsStorageService.getTodoItems(), this]);
+    todoItemsStorageService.addTodoItem(this);
   }
 
   function toggleTodoItemCompletedStatus(id) {
-    const todoItems = todoItemsStorageService.getTodoItems();
-    const todoItem = todoItems.filter(todoItem => todoItem.id === id)[0];
+    const todoItem = todoItemsStorageService.getTodoItem(id);
     todoItem.completed = !todoItem.completed;
-    todoItemsStorageService.setTodoItems(todoItems);
+    todoItemsStorageService.updateTodoItem(todoItem);
   }
 
   const getTodoItems = () => todoItemsStorageService.getTodoItems();
