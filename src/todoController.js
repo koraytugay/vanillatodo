@@ -2,11 +2,9 @@ import todoService from './todoService.js';
 
 (function() {
   const findById = id => document.querySelector(`#${id}`);
-  const createElement = (tag, options) => document.createElement(tag, options);
+  const createElement = (name, props = {}) => Object.assign(document.createElement(name), props);
 
-  window.addEventListener('load', function() {
-    refreshUi();
-  });
+  window.addEventListener('load', refreshUi);
 
   findById('new-todo-input').addEventListener('keydown', e => {
     if ('Enter' === e.key && e.target.value) {
@@ -16,7 +14,7 @@ import todoService from './todoService.js';
     }
   });
 
-  findById('delete-all-todo-items').addEventListener('click', e => {
+  findById('delete-all-todo-items').addEventListener('click', () => {
     todoService.deleteTodoItems();
     refreshUi();
   });
@@ -31,30 +29,22 @@ import todoService from './todoService.js';
     refreshUi();
   }
 
-  function createTodoDiv(todoItem) {
-    const todoDiv = createElement('div');
-    todoDiv.id = todoItem.id;
+  function createTodoDiv({text, id, completed}) {
+    const markAsDoneCheckbox = createElement('input', {type: 'checkbox', checked: completed});
+    markAsDoneCheckbox.addEventListener('click', () => toggleTodoCompleteStatus(id));
 
-    const markAsDoneCheckbox = createElement('input');
-    markAsDoneCheckbox.setAttribute('type', 'checkbox');
-    markAsDoneCheckbox.addEventListener('click', () => toggleTodoCompleteStatus(todoItem.id));
-
-    const todoSpan = createElement('span');
-    todoSpan.innerText = todoItem.text;
-
-    const deleteTodoItemLink = createElement('a');
-    deleteTodoItemLink.setAttribute('href', '#');
-    deleteTodoItemLink.addEventListener('click', () => deleteTodoItem(todoItem.id));
-    deleteTodoItemLink.innerText = '❌';
-
-    if (todoItem.completed) {
+    const todoSpan = createElement('span', {textContent: text});
+    if (completed) {
       todoSpan.classList.add('done');
-      markAsDoneCheckbox.setAttribute('checked', 'checked');
     }
 
-    todoDiv.appendChild(markAsDoneCheckbox);
-    todoDiv.appendChild(todoSpan);
-    todoDiv.appendChild(deleteTodoItemLink);
+    const deleteTodoItemLink = createElement('a', {href: '#', textContent: '❌'});
+    deleteTodoItemLink.addEventListener('click', () => deleteTodoItem(id));
+
+    const todoDiv = createElement('div', {id: id});
+    [markAsDoneCheckbox, todoSpan, deleteTodoItemLink].forEach(element => {
+      todoDiv.appendChild(element);
+    });
 
     return todoDiv;
   }
